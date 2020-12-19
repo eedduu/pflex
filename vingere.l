@@ -19,12 +19,21 @@ using namespace std;
 	vector<vector<char>> matriz;
 %}
 
-digito [0-9]
+natural [0-9]+
+entero  "-"{natural}
+racional ({entero}"."{natural})
+racional2	({natural}"."{natural})
 letra [a-zA-Z]
 especial [:#;]
 palabra ({letra}+)
 
+
 %%
+
+{natural}	salida+="N";
+{entero}	salida+="E";
+{racional}	salida+="R";
+{racional2}	salida+="R";
 {palabra}   {
     string a(yytext);
 	if (cod)
@@ -36,6 +45,10 @@ palabra ({letra}+)
 (\t)+	salida+="\t";
 (\n)+	salida+="\n";
 ([ ])	salida+=" ";
+(,)   salida+=".";
+(.)   salida+=",";
+
+
 
 
 %%
@@ -54,7 +67,7 @@ int main (int argc, char *argv[]){
 		else{
 			cout << "Error introduciendo los datos" << endl;
 			exit(1);
-		} 
+		}
 
     	matriz = vingere();
 		bool m=true;
@@ -88,7 +101,7 @@ int main (int argc, char *argv[]){
 		vector<vector<char>> salida;
 		vector<char> abecedario = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 		vector<char> temporal;
-	
+
 		for (int i=0; i<abecedario.size(); i++){
         	temporal.resize(0);
         	for(int j=0; j<abecedario.size(); j++){
@@ -127,7 +140,7 @@ int main (int argc, char *argv[]){
 		}
 
 		return salida;
-	}	
+	}
 
 	int pos(char letra){
     	return (letra & NUM)-1;
@@ -139,4 +152,3 @@ int main (int argc, char *argv[]){
 		cout << "c) --> Para codificar " << endl;
 		cout << "s) --> Para salir " <<endl;
 	}
-

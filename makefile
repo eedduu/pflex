@@ -8,4 +8,5 @@ lex.yy.c: vingere.l
 prueba:	lex.yy.c
 	@$(CXX) $^ -o $@ -lfl
 
-
+clean: 
+	rm lex.yy.c prueba
