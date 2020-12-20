@@ -9,4 +9,4 @@ prueba:	lex.yy.c
 	@$(CXX) $^ -o $@ -lfl
 
 clean: 
-	rm lex.yy.c prueba
+	rm lex.yy.c prueba codificado.txt descodificado.txt

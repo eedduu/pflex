@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
 using namespace std;
 
 	vector<vector<char>> vingere();
@@ -20,20 +21,20 @@ using namespace std;
 %}
 
 natural [0-9]+
-entero  "-"{natural}
+entero  ("-"{natural}|{natural})
 racional ({entero}"."{natural})
-racional2	({natural}"."{natural})
 letra [a-zA-Z]
 especial [:#;]
 palabra ({letra}+)
-
+fecha (0[1-9]|[1-2][0-9]|3[0-1])("/"|"-")((0(1|3|5|7|8))|(10|12))("/"|"-")([1-2][0-9][0-9][-0-9])|(0[1-9]|[1-2][0-9]|30)("/"|"-")((0(4|6|9))|11)("/"|"-")([1-2][0-9][0-9][0-9])|(0[1-9]|1[0-9]|2[0-8])("/"|"-")02("/"|"-")([1-2][0-9][0-9][0-9])
+			//Fechas meses 31 días																																			//Empieza fecha meses 30 días																						    	//Febrero
 
 %%
 
 {natural}	salida+="N";
 {entero}	salida+="E";
 {racional}	salida+="R";
-{racional2}	salida+="R";
+{fecha}	salida+="FECHA";
 {palabra}   {
     string a(yytext);
 	if (cod)
@@ -46,7 +47,7 @@ palabra ({letra}+)
 (\n)+	salida+="\n";
 ([ ])	salida+=" ";
 (,)   salida+=".";
-(.)   salida+=",";
+(\.)   salida+=",";
 
 
 
@@ -70,8 +71,9 @@ int main (int argc, char *argv[]){
 		}
 
     	matriz = vingere();
-		bool m=true;
-		char opcion;
+		bool salid=true, pantalla=true;
+		char opcion, conf;
+
 
 		menu();
 		cin >> opcion;
@@ -80,19 +82,40 @@ int main (int argc, char *argv[]){
 			case 'c':
 				cod = true;
 				yylex();
+				cout << "¿Quiere mostrar la salida en pantalla(S/N)? (En caso contrario se guardará en codificado.txt)" << endl;
+				cin >> conf;
 				break;
 			case 'd':
 				cod = false;
 				yylex();
+				cout << "¿Quiere mostrar la salida en pantalla(S/N)? (En caso contrario se guardará en descodificado.txt)" << endl;
+				cin >> conf;
 				break;
 			default:
-				m = false;
+				salid = false;
 				break;
 		}
+	if(conf=='N' || conf=='n' || conf=='No' || conf=='NO') pantalla=false;
+	if (salid){
+			if(pantalla)
+			{
+				salida.resize(salida.size()-1);
+	    	cout << salida << endl;
+			}
+			else
+			{
+				string nombre;
+				if(cod)
+				{
+					nombre="codificado.txt";
+				}
+				else
+					nombre="descodificado.txt";
 
-	if (m){
-			salida.resize(salida.size()-1);
-    		cout << salida << endl;
+				ofstream archivo;
+				archivo.open(nombre);
+				archivo << salida << endl;
+			}
 		}
 }
 
