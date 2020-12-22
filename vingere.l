@@ -22,7 +22,7 @@ using namespace std;
 
 natural [0-9]+
 entero  ("-"{natural}|{natural})
-racional ({entero}"."{natural})
+racional ({entero}"."{natural}|{entero})
 letra [a-zA-Z]
 especial [:#;]
 palabra ({letra}+)
@@ -31,9 +31,30 @@ fecha (0[1-9]|[1-2][0-9]|3[0-1])("/"|"-")((0(1|3|5|7|8))|(10|12))("/"|"-")([1-2]
 
 %%
 
-{natural}	salida+="N";
-{entero}	salida+="E";
-{racional}	salida+="R";
+{natural}	{
+	double num = stod(yytext);
+	if (cod)
+		num = num + palabram.size();
+	else
+		num = num - palabram.size();
+	salida+=num;
+}
+{entero}	{
+	double num = stod(yytext);
+	if (cod)
+		num = num + palabram.size();
+	else
+		num = num - palabram.size();
+	salida+=num;
+}
+{racional}	{
+	double num = stod(yytext);
+	if (cod)
+		num = num + palabram.size();
+	else
+		num = num - palabram.size();
+	salida+=num;
+}
 {fecha}	salida+="FECHA";
 {palabra}   {
     string a(yytext);
