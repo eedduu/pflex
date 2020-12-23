@@ -32,20 +32,20 @@ fecha (0[1-9]|[1-2][0-9]|3[0-1])("/"|"-")((0(1|3|5|7|8))|(10|12))("/"|"-")([1-2]
 %%
 
 {natural}	{
-	double num = stod(yytext);
+	int num = stod(yytext);
 	if (cod)
 		num = num + palabram.size();
 	else
 		num = num - palabram.size();
-	salida+=num;
+	salida+=to_string(num);
 }
 {entero}	{
-	double num = stod(yytext);
+	int num = stod(yytext);
 	if (cod)
 		num = num + palabram.size();
 	else
 		num = num - palabram.size();
-	salida+=num;
+	salida+=to_string(num);
 }
 {racional}	{
 	double num = stod(yytext);
@@ -53,7 +53,7 @@ fecha (0[1-9]|[1-2][0-9]|3[0-1])("/"|"-")((0(1|3|5|7|8))|(10|12))("/"|"-")([1-2]
 		num = num + palabram.size();
 	else
 		num = num - palabram.size();
-	salida+=num;
+	salida+=to_string(num);
 }
 {fecha}	salida+="FECHA";
 {palabra}   {
