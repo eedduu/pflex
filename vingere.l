@@ -30,10 +30,10 @@ numero {natural}|{entero}|{racional}
 letra [a-zA-Z]
 palabra ({letra}+)
 especial [:#;]
-fecha (0[1-9]|[1-2][0-9]|3[0-1])("/"|"-")((0(1|3|5|7|8))|(10|12))("/"|"-")([1-2][0-9][0-9][0-9])|(0[1-9]|[1-2][0-9]|30)("/"|"-")((0(4|6|9))|11)("/"|"-")([1-2][0-9][0-9][0-9])|(0[1-9]|1[0-9]|2[0-8])("/"|"-")02("/"|"-")([1-2][0-9][0-9][0-9])
+fecha (0[1-9]|[1-2][0-9]|3[0-1])("/"|"-")((0(1|3|5|7|8))|(10|12))("/"|"-")([0-2][0-9][0-9][0-9])|(0[1-9]|[1-2][0-9]|30)("/"|"-")((0(4|6|9))|11)("/"|"-")([0-2][0-9][0-9][0-9])|(0[1-9]|1[0-9]|2[0-8])("/"|"-")02("/"|"-")([-2][0-9][0-9][0-9])
 			//Fechas meses 31 días																																			//Fecha meses 30 días																						          	//Febrero
 
-fechacod {natural}",,"{natural}",,"{natural}
+fechacod [0-9][0-9]",,"[0-9][0-9]",,"[0-9][0-9][0-9][0-9]
 %%
 
 {fechacod}	salida+=decodificarFecha(yytext);
@@ -46,7 +46,6 @@ fechacod {natural}",,"{natural}",,"{natural}
 		if(num[i]!='.' && !neg)
 			{
 				string aux= num.substr(i,1);
-				cout << aux << endl;
 				int digito = stoi(aux);
 				digito=(digito+desplazamiento)%10;
 				if(digito<0) digito=10+digito;

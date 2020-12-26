@@ -1,12 +1,12 @@
 CXX = g++  -w -std=c++11
 
-all: prueba
+all: prog
 
 lex.yy.c: vingere.l
 	@flex vingere.l
 
-prueba:	lex.yy.c
+prog:	lex.yy.c
 	@$(CXX) $^ -o $@ -lfl
 
 clean: 
-	rm lex.yy.c prueba codificado.txt descodificado.txt
+	rm lex.yy.c prog codificado.txt descodificado.txt
