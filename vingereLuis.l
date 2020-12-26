@@ -8,8 +8,6 @@ using namespace std;
 	vector<vector<char>> vingere();
 	string codificar(string pc);
 	string decodificar(string pc);
-	string codificarFecha(string fecha);
-	string decodificarFecha(string fecha);
 	int pos(char letra);
 	void menu();
 
@@ -18,123 +16,57 @@ using namespace std;
 	string cadena;
 	string palabram;
 	string salida;
-	int desplazamiento;
 	const int NUM = 31;
 	vector<vector<char>> matriz;
 %}
 
 natural [0-9]+
 entero  ("-"{natural}|{natural})
-racional ({entero}"."{natural})
+racional ({entero}"."{natural}|{entero})
 numero {natural}|{entero}|{racional}
 letra [a-zA-Z]
-palabra ({letra}+)
 especial [:#;]
-fecha (0[1-9]|[1-2][0-9]|3[0-1])("/"|"-")((0(1|3|5|7|8))|(10|12))("/"|"-")([1-2][0-9][0-9][0-9])|(0[1-9]|[1-2][0-9]|30)("/"|"-")((0(4|6|9))|11)("/"|"-")([1-2][0-9][0-9][0-9])|(0[1-9]|1[0-9]|2[0-8])("/"|"-")02("/"|"-")([1-2][0-9][0-9][0-9])
-			//Fechas meses 31 días																																			//Fecha meses 30 días																						          	//Febrero
+palabra ({letra}+)
+fecha (0[1-9]|[1-2][0-9]|3[0-1])("/"|"-")((0(1|3|5|7|8))|(10|12))("/"|"-")([1-2][0-9][0-9][-0-9])|(0[1-9]|[1-2][0-9]|30)("/"|"-")((0(4|6|9))|11)("/"|"-")([1-2][0-9][0-9][0-9])|(0[1-9]|1[0-9]|2[0-8])("/"|"-")02("/"|"-")([1-2][0-9][0-9][0-9])
+			//Fechas meses 31 días																																			//Empieza fecha meses 30 días																						    	//Febrero
 
-fechacod {natural}",,"{natural}",,"{natural}
 %%
 
-{fechacod}	salida+=decodificarFecha(yytext);
 {numero}	{
-	string num(yytext), out;
-	bool neg=false;
-	if (num.front()=='-') neg=true;
-	for(unsigned int i=0; i<num.size();i++)
-	{
-		if(num[i]!='.' && !neg)
-			{
-				string aux= num.substr(i,1);
-				cout << aux << endl;
-				int digito = stoi(aux);
-				digito=(digito+desplazamiento)%10;
-				if(digito<0) digito=10+digito;
-				out+=to_string(digito);
-			}
-		else if (neg)
-		{
-			out+="-";
-			neg=false;
-		}
-		else
-			out+=".";
-	}
-	salida+=out;
+	int num = stod(yytext);
+	if (cod)
+		num = num + palabram.size();
+	else
+		num = num - palabram.size();
+	salida+=to_string(num);
 }
+{fecha}	{
+	string fecha(yytext);
+	string dia = fecha.substr(0,2);
+	salida+=dia;
+
+	string mes = fecha.substr(3,2);
+	salida+=mes;
+	}
 {palabra}   {
     string a(yytext);
-		if (cod)
-			salida += codificar(a);
+	if (cod)
+		salida += codificar(a);
     else
-			salida += decodificar(a);
+		salida += decodificar(a);
 	}
-{fecha} {
-		if (cod)
-			salida += codificarFecha(yytext);
-		else
-			salida+= decodificarFecha(yytext);
-		}
+
 (\t)+	salida+="\t";
 (\n)+	salida+="\n";
 ([ ])	salida+=" ";
 (,)   salida+=".";
 (\.)   salida+=",";
-. salida+=yytext;
 
 
 
 
 %%
 
-string codificarFecha (string fecha){
-	string sal;
-	for(unsigned int i=0; i<fecha.size();i++)
-	{
-		if(fecha[i]=='/')
-		{
-			sal+=",,";
-		}
-		else
-		{
-			string aux=fecha.substr(i,1);
-			int a=(stoi(aux));
-			a=(a+desplazamiento)%10;
-			sal+=to_string(a);
-		}
-
-	}
-	return sal;
-}
-
-string decodificarFecha(string fecha){
-	string sal;
-	bool pasar=false;
-	for(int i=0; i<fecha.size(); i++)
-	{
-		if(fecha[i]==',')
-		{
-			if(!pasar)
-			{
-				sal+="/";
-				pasar=true;
-			}
-			else
-				pasar=false;
-		}
-		else
-		{
-
-			string aux=fecha.substr(i,1);
-			int a=(stoi(aux));
-			a=(a+desplazamiento)%10;
-			if (a<0) a=10+a;
-			sal+=to_string(a);
-
-		}
-	}
-	return sal;
-}
 
 int main (int argc, char *argv[]){
 
@@ -150,7 +82,6 @@ int main (int argc, char *argv[]){
 			cout << "Error introduciendo los datos" << endl;
 			exit(1);
 		}
-		desplazamiento=palabram.size();
 
     	matriz = vingere();
 		bool salid=true, pantalla=true;
@@ -169,7 +100,6 @@ int main (int argc, char *argv[]){
 				break;
 			case 'd':
 				cod = false;
-				desplazamiento=-desplazamiento;
 				yylex();
 				cout << "¿Quiere mostrar la salida en pantalla(S/N)? (En caso contrario se guardará en descodificado.txt)" << endl;
 				cin >> conf;

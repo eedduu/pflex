@@ -1,4 +1,4 @@
-CXX = g++ -O2 -w -std=c++11
+CXX = g++  -w -std=c++11
 
 all: prueba
 
