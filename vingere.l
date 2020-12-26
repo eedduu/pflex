@@ -62,11 +62,10 @@ fechacod [0-9][0-9]",,"[0-9][0-9]",,"[0-9][0-9][0-9][0-9]
 	salida+=out;
 }
 {palabra}   {
-    string a(yytext);
 		if (cod)
-			salida += codificar(a);
+			salida += codificar(yytext);
     else
-			salida += decodificar(a);
+			salida += decodificar(yytext);
 	}
 {fecha} {
 		if (cod)
@@ -85,55 +84,6 @@ fechacod [0-9][0-9]",,"[0-9][0-9]",,"[0-9][0-9][0-9][0-9]
 
 
 %%
-
-string codificarFecha (string fecha){
-	string sal;
-	for(unsigned int i=0; i<fecha.size();i++)
-	{
-		if(fecha[i]=='/')
-		{
-			sal+=",,";
-		}
-		else
-		{
-			string aux=fecha.substr(i,1);
-			int a=(stoi(aux));
-			a=(a+desplazamiento)%10;
-			sal+=to_string(a);
-		}
-
-	}
-	return sal;
-}
-
-string decodificarFecha(string fecha){
-	string sal;
-	bool pasar=false;
-	for(int i=0; i<fecha.size(); i++)
-	{
-		if(fecha[i]==',')
-		{
-			if(!pasar)
-			{
-				sal+="/";
-				pasar=true;
-			}
-			else
-				pasar=false;
-		}
-		else
-		{
-
-			string aux=fecha.substr(i,1);
-			int a=(stoi(aux));
-			a=(a+desplazamiento)%10;
-			if (a<0) a=10+a;
-			sal+=to_string(a);
-
-		}
-	}
-	return sal;
-}
 
 int main (int argc, char *argv[]){
 
@@ -256,4 +206,54 @@ int main (int argc, char *argv[]){
 		cout << "d) --> Para decodificar" << endl;
 		cout << "c) --> Para codificar " << endl;
 		cout << "s) --> Para salir " <<endl;
+	}
+
+
+	string codificarFecha (string fecha){
+		string sal;
+		for(unsigned int i=0; i<fecha.size();i++)
+		{
+			if(fecha[i]=='/')
+			{
+				sal+=",,";
+			}
+			else
+			{
+				string aux=fecha.substr(i,1);
+				int a=(stoi(aux));
+				a=(a+desplazamiento)%10;
+				sal+=to_string(a);
+			}
+
+		}
+		return sal;
+	}
+
+	string decodificarFecha(string fecha){
+		string sal;
+		bool pasar=false;
+		for(int i=0; i<fecha.size(); i++)
+		{
+			if(fecha[i]==',')
+			{
+				if(!pasar)
+				{
+					sal+="/";
+					pasar=true;
+				}
+				else
+					pasar=false;
+			}
+			else
+			{
+
+				string aux=fecha.substr(i,1);
+				int a=(stoi(aux));
+				a=(a+desplazamiento)%10;
+				if (a<0) a=10+a;
+				sal+=to_string(a);
+
+			}
+		}
+		return sal;
 	}
